@@ -1,0 +1,11 @@
+/*
+    Mateusz Kubuszok (179956)
+*/
+
+/*  beginning of data section */
+data;
+
+param n := 10; /*  parameter n defining matrix size  */
+
+/*  end of data section */
+end;

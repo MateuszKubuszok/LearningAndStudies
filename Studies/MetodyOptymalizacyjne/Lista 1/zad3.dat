@@ -1,0 +1,84 @@
+/*
+    Mateusz Kubuszok (179956)
+*/
+
+/*  beginning of data section */
+data;
+
+/*  definition of enumeration types used in model  */
+set Resources := 'B1' 'B2';                                   /*  definition of available resources  */
+set Processes := 'Destilation' 'Cracking';                    /*  definition of available production processes  */
+set InterProducts := 'Petrol' 'Oil' 'Destilate' 'Leftovers';  /*  definition of available intermidiate products  */
+set Products := 'EngineOil' 'HomeOil' 'HeavyOil';             /*  definition of available products  */
+
+
+
+/*  definition of enums mapping */
+
+/*  definition of products mapped to intermidiate products */
+param ProductsToInterProducts :=
+    ['EngineOil','Petrol'] := 1
+    ['HomeOil','Oil'] := 1
+    ['HeavyOil','Leftovers'] := 1
+;
+
+
+
+/*  definition of costs  */
+
+/*  definition of cost of each resource  */
+param ResourcesCost :=
+    'B1' 1300
+    'B2' 1500
+;
+
+/*  definition of cost of each process  */
+param ProcessCosts :=
+    'Destilation' 10
+    'Cracking'    20
+;
+
+
+
+/*  definition of restrictions related to sulphur  */
+
+/*  definition of sulphur amount in products in percent  */
+param SulphurAmounts :
+        'Destilation' 'Cracking' :=
+    'B1' 0.002        0.003
+    'B2' 0.012        0.025
+;
+
+/*  definition of maximal sulphur amount in final product (home oil) in percent  */
+param MaxSulphurAmount := 
+    'EngineOil' 1
+    'HomeOil'   0.005
+    'HeavyOil'  1
+;
+
+
+
+/*  definition of restrictions related to production  */
+
+/*  definition of minimal required amount of each product  */
+param MinAmounts :=
+    'EngineOil' 200000
+    'HomeOil'   400000
+    'HeavyOil'  250000
+;
+
+/*  definition of efficiency of each process for each resource and intermidiate product  */
+param Efficiency :=
+    [*,*,Destilation] :
+         'Petrol'  'Oil'  'Destilate'  'Leftovers' :=
+    'B1' 0.15      0.40   0.15         0.15
+    'B2' 0.10      0.35   0.20         0.25
+
+    [*,*,Cracking] :
+         'Petrol'  'Oil'  'Leftovers' :=
+    'B1' 0.50      0.20   0.06
+    'B2' 0.50      0.20   0.06
+;
+
+/*  end of data section */
+end;

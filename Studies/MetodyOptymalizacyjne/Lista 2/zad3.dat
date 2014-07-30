@@ -1,0 +1,17 @@
+/*
+    Mateusz Kubuszok (179956)
+*/
+
+/*  beginning of data section */
+data;
+
+param : J : Readiness Duration Wage :=
+        1   0         5        9
+        2   3         2        4
+        3   10        8        1
+        4   0         6        10
+        5   2         7        2
+;
+
+/*  end of data section */
+end;

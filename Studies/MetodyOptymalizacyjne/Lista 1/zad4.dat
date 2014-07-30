@@ -1,0 +1,144 @@
+/*
+    Mateusz Kubuszok (179956)
+*/
+
+/*  beginning of data section */
+data;
+
+/*  definition of enumeration types used in model  */
+set Subjects := Algebra Calculus Physics ChemMin ChemOrg; /*  definition of available subjects  */
+set Groups := G1 G2 G3 G4;                                /*  definition of available groups  */
+set SportGroups := S1 S2 S3;                              /*  definition of available sport group  */
+
+
+
+/*  definition of non-overlaping time intervals used for time allocation  */
+
+/*  definition of possible days  */
+set Days := Mo Tu We Th Fr;
+
+/*  definition of non-overlaping time intervals  */
+set Hours :=
+    Mo0800_0900 Mo0900_1000 Mo1000_1030 Mo1030_1100 Mo1100_1200                         Mo1300_1400 Mo1400_1500
+    Tu0800_0900 Tu0900_1000 Tu1000_1100             Tu1100_1200 Tu1200_1300
+                            We1000_1100             We1100_1200 We1200_1300             We1300_1400 We1400_1500
+    Th0800_0900 Th0900_1000 Th1000_1100             Th1100_1200 Th1200_1300             Th1300_1400 Th1400_1500             Th1500_1600 Th1600_1700 Th1700_1800 Th1800_1900 Th1900_2000
+                                                    Fr1100_1200 Fr1200_1230 Fr1230_1300 Fr1300_1400 Fr1400_1430 Fr1430_1500
+;
+
+/*  definition of duration of each interval (where different to 1)  */
+param HourDuration :=
+    Mo1000_1030  0.5  Mo1030_1100  0.5  Fr1200_1230  0.5  Fr1230_1300  0.5  Fr1400_1430  0.5 Fr1430_1500  0.5
+;
+
+/*  definition of days to hours mapping  */
+param DaysToHours :=
+    [*,Mo] :=
+    Mo0800_0900  1  Mo0900_1000  1  Mo1000_1030  1  Mo1030_1100  1  Mo1100_1200  1  Mo1300_1400  1   Mo1400_1500  1
+
+    [*,Tu] :=
+    Tu0800_0900  1  Tu0900_1000  1  Tu1000_1100  1  Tu1100_1200  1  Tu1200_1300  1
+
+    [*,We] :=
+    We1000_1100  1  We1100_1200  1  We1200_1300  1  We1300_1400  1  We1400_1500 1
+
+    [*,Th] :=
+    Th0800_0900  1  Th0900_1000  1  Th1000_1100  1  Th1100_1200  1  Th1200_1300  1  Th1300_1400  1  Th1400_1500  1  Th1500_1600  1  Th1600_1700  1  Th1700_1800  1  Th1800_1900  1  Th1900_2000  1
+
+    [*,Fr] :=
+    Fr1100_1200  1  Fr1200_1230  1  Fr1230_1300  1  Fr1300_1400  1  Fr1400_1430  1  Fr1430_1500  1
+;
+
+
+
+/*  definition of restrictions related to academic activities  */
+
+/*  definition of hours allocated for each group  */
+param PlanAllocation := 
+    /*  Algerbra's groups plan  */
+    [*,G1,Algebra] :=  Mo1300_1400  1  Mo1400_1500  1  /*  Monday    13:00-15:00  */
+    [*,G2,Algebra] :=  Tu1000_1100  1  Tu1100_1200  1  /*  Tuesday   10:00-12:00  */
+    [*,G3,Algebra] :=  We1000_1100  1  We1100_1200  1  /*  Wedensday 10:00-12:00  */
+    [*,G4,Algebra] :=  We1100_1200  1  We1200_1300  1  /*  Wedensday 11:00-13:00  */
+
+    /*  Calculus's groups plan  */
+    [*,G1,Calculus] := Mo1300_1400  1  Mo1400_1500  1  /*  Monday    13:00-15:00  */
+    [*,G2,Calculus] := Tu1000_1100  1  Tu1100_1200  1  /*  Tuesday   10:00-12:00  */
+    [*,G3,Calculus] := We1100_1200  1  We1200_1300  1  /*  Wedensday 11:00-13:00  */
+    [*,G4,Calculus] := Th0800_0900  1  Th0900_1000  1  /*  Thursday  08:00-10:00  */
+
+    /*  Physics's groups plan  */
+    [*,G1,Physics] :=  Tu0800_0900  1  Tu0900_1000  1  Tu1000_1100  1  /*  Tuesday  08:00-11:00  */
+    [*,G2,Physics] :=  Tu1000_1100  1  Tu1100_1200  1  Tu1200_1300  1  /*  Tuesday  10:00-13:00  */
+    [*,G3,Physics] :=  Th1500_1600  1  Th1600_1700  1  Th1700_1800  1  /*  Thursday 15:00-18:00  */
+    [*,G4,Physics] :=  Th1700_1800  1  Th1800_1900  1  Th1900_2000  1  /*  Thursday 17:00-20:00  */
+
+    /*  Minerals Chemistry's groups plan  */
+    [*,G1,ChemMin] :=  Mo0800_0900  1  Mo0900_1000  1  /*  Monday    08:00-10:00  */
+    [*,G2,ChemMin] :=  Mo0800_0900  1  Mo0900_1000  1  /*  Monday    08:00-10:00  */
+    [*,G3,ChemMin] :=  Th1300_1400  1  Th1400_1500  1  /*  Thursday  14:00-15:00  */
+    [*,G4,ChemMin] :=  Fr1300_1400  1  Fr1400_1430  1  Fr1430_1500  1  /*  Friday   13:00-15:00  */
+
+    /*  Organics Chemistry's groups plan  */
+    [*,G1,ChemOrg] :=  Mo0900_1000  1  Mo1000_1030  1  /*  Monday    09:00-10:30  */
+    [*,G2,ChemOrg] :=  Mo1030_1100  1  Mo1100_1200  1  /*  Monday    10:30-12:00  */
+    [*,G3,ChemOrg] :=  Fr1100_1200  1  Fr1200_1230  1  /*  Friday    11:00-12:30  */
+    [*,G4,ChemOrg] :=  Fr1300_1400  1  Fr1400_1430  1  /*  Friday    13:00-14:30  */
+;
+
+
+/*  definition of maximal hours to attend daily  */
+param MaxHoursDaily := 4;
+
+
+
+/*  definition of restrictions related to sport activities  */
+
+/*  definition of hours allocated for each sport group  */
+param SportGroupsAllocation :=
+    [*,S1] := Mo1300_1400  1  Mo1400_1500  1  /*  Monday    13:00-15:00  */
+    [*,S2] := We1100_1200  1  We1200_1300  1  /*  Wedensday 11:00-13:00  */
+    [*,S3] := We1300_1400  1  We1400_1500  1  /*  Wedensday 13:00-15:00  */
+;
+
+/*  definition of minimal amount of sport activities to attend weekly  */
+param MinimalSportGroupActivities := 1;
+
+
+
+/*  definition of restrictions related to require free time in some intervals  */
+
+/*  definition of hours that should be considered to be free  */
+param PotenciallyFreeHours :=
+    Mo1300_1400  1
+    Tu1200_1300  1
+    We1200_1300  1  We1300_1400  1
+    Th1200_1300  1  Th1300_1400  1
+    Fr1200_1230  1  Fr1230_1300  1  Fr1300_1400  1
+;
+
+/*  definiton of lengths of considered intervals for each day  */
+param FreeHoursDuration :=
+    Mo 2
+    Tu 2
+    We 2
+    Th 2
+    Fr 2
+;
+
+/*  definition of miminal amount of free hours during considered intervals  */
+param RequiredFreeHoursDaily := 1;
+
+
+
+/*  definition of groups' ranks */
+param Ranks :
+        Algebra Calculus Physics ChemMin ChemOrg :=
+    G1  5       4        3       10      0
+    G2  4       4        3       10      5
+    G3  10      5        7       7       3
+    G4  5       6        8       5       4
+;
+
+/*  end of data section */
+end;

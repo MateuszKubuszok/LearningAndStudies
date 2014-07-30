@@ -1,0 +1,140 @@
+\documentclass[polish,12pt,titlepage]{article}
+
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\selectlanguage{polish}
+
+\usepackage{listings}
+\usepackage{url}
+\usepackage{path}
+\usepackage{here}
+
+\usepackage{color}
+\definecolor{lightgray}{gray}{0.6}
+
+%\setlength{\textwidth}{400pt}
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\TAB}{\hspace{0.50cm}}
+\newcommand{\IFF}{\leftrightarrow}
+\newcommand{\IMP}{\rightarrow}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{definition}{Definition}[section]
+
+\makeindex
+
+\begin{document}
+
+\title{Metody Optymalizacyjne - sprawozdanie z listy 3}
+\author{Mateusz Kubuszok (179956)}
+\maketitle
+
+\section{Zadanie 1}
+
+Zadanie polega na uszeregowaniu zadań aby czas wykonania był jak najkrótszy. Część zadań nie może być rozpoczęta przez zakończeniem innych zadań, każde może też wymagać wykorzystania zasobów i niemożliwe jest rozpoczęcie zadania, gdy nie ma dość wolnych zasobów do jego wykonania.
+
+Parametrami są:
+\begin{itemize}
+	\item dodatnia całkowita liczba zadań $n$,
+	\item dodatnia całkowita liczba rodzajów zasobów $p$,
+	\item dodatnie limity poszczególnych zasobów $Limits_r$, $r \in \{1, ..., p\}$,
+	\item nieujemne ilości zasobów wymagane przez każde zadanie $Requires_{j,r}$, $j \in \{1, ..., n\}$, $r \in \{1, ..., p\}$,
+	\item czas trwania poszczególnych zadań (l. całkowita dodatnia) $Duration_j$, $j \in \{1, ..., n\}$,
+	\item zbiór zależności $(i,j) \in Dependency$, $i,j \in \{1, ..., n\}$ (zadanie $i$ zależy od zadania $j$).
+\end{itemize} 
+
+\subsection{Zmienne pomocnicze}
+
+\begin{itemize}
+	\item zbiór zadań $Jobs = {1, ..., n}$,
+	\item zbiór typów zasobów $Resources = {1, ..., p}$,
+	\item maksymalny czas wykonania wszystkich zadań (w pełnych jednostkach czasowych):
+	$$MaxExecutionTime = \sum\limits_{j \in Jobs} Duration_j$$
+	\item dyskretny zbiór momentów w czasie od rozpoczęcia do maksymalnego czasu wykonania (co 1 jednostkę):
+	$$Times = {0, ..., MaxExecutionTime}$$
+\end{itemize}
+
+\subsection{Zmienne decyzyjne}
+
+\begin{itemize}
+	\item zmienne binarne $Active_{j,t}$ opisujące czy zadanie $j$ zaczęło się w chwili $t$,
+	\item zmienne nieujemne $ResourcesInTime_{r,t}$ opisujące ilość wolnych zasobów $r$ w chwili $t$,
+	\item nieujemny całkowity czas zakończenia ostatniego zadania $FinishTime$.
+\end{itemize}
+
+\subsection{Ograniczenia}
+
+\begin{itemize}
+	\item każde zadanie ma tylko jeden moment rozpoczęcia:
+	$$\forall_{j \in Jobs} \sum\limits_{t \in Times} Active_{j,t} = 1$$
+	\item zadania przestrzegają kolejności:
+	$$\forall_{(i,j) \in Dependency} \sum\limits_{t \in Times} t*Active_{j,t}  + Duration_j \leq \sum\limits_{t \in Times} t*Active_{i,t}$$
+	\item wartość $FinishTime$ określa czas po zakończeniu wszystkich zadań,
+	$$\forall_{(i,j) \in Dependency} \sum\limits_{t \in Times} t*Active_{j,t}  + Duration_j \leq FinishTime$$
+	\item ilość zasobów nigdy nie przekracza ustalonego z góry limitu:
+	$$\forall_{r \in Resources, t \in Times} ResourcesInTime_{r,t} \leq Limits_r$$
+	\item zadania alokują zasoby przy rozpoczęciu i zwalniają przy zakończeniu:
+	$$\forall_{r \in Resources} ResourcesInTime_{r,0} = Limits_r - \sum\limits_{j \in Jobs} Active_{j,0} * Requires_{j,r}$$
+	$$\forall_{r \in Resources, t \in Times-\{0\}} ResourcesInTime_{r,t} = ResourcesInTime_{r,t-1}$$
+	$$ + \sum\limits_{j \in Jobs, t-Duration_j \geq 0} Active_{j,t-Duration_j} * Requires_{j,r}$$
+	$$ - \sum\limits_{j \in Jobs} Active_{j,t} * Requires_{j,r}$$
+\end{itemize}
+
+\subsection{Funkcja celu}
+
+$$FinishTime \rightarrow minimalizuj$$
+
+\subsection{Wyniki}
+
+\begin{center}
+\begin{tabular}{ | c | c | c | }
+	\hline
+	Zadanie & Start & Koniec \\
+	\hline
+	1 & 0   & 50  \\
+	2 & 96  & 143 \\
+	3 & 51  & 106 \\
+	4 & 50  & 96  \\
+	5 & 143 & 175 \\
+	6 & 108 & 165 \\
+	7 & 143 & 158 \\
+	8 & 175 & 237 \\
+	\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+Czas całkowity: $237$ jednostek czasu.
+\end{center}
+
+\begin{center}
+Diagram Gantt'a:
+\texttt{
+j~~~0~~~50~~51~~96~~106~108~143~158~165~175~237~\linebreak
+1~~~[~~~]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\linebreak
+2~~~~~~~~~~~~~~~[~~~~~~~~~~~]~~~~~~~~~~~~~~~~~~~\linebreak
+3~~~~~~~~~~~[~~~~~~~]~~~~~~~~~~~~~~~~~~~~~~~~~~~\linebreak
+4~~~~~~~[~~~~~~~]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\linebreak
+5~~~~~~~~~~~~~~~~~~~~~~~~~~~[~~~~~~~~~~~]~~~~~~~\linebreak
+6~~~~~~~~~~~~~~~~~~~~~~~[~~~~~~~~~~~]~~~~~~~~~~~\linebreak
+7~~~~~~~~~~~~~~~~~~~~~~~~~~~[~~~]~~~~~~~~~~~~~~~\linebreak
+8~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[~~~]~~~\linebreak
+}
+\end{center}
+
+\end{document}

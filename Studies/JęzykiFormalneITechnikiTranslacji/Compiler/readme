@@ -1,0 +1,54 @@
+
+ Autor: Mateusz Kubuszok (nr indeksu 179956)
+
+ Kompilator korzysta z bilioteki BigDigits
+ (http://www.di-mgt.com.au/bigdigits.html).
+
+--------------------------------------------------------------------------------
+
+Wymagane pakiety: GCC, FLEX, BISON, CLN.
+
+Wymagne jest również istnienie katalogu /tmp jako wyjścia dla FLEXa i BISONa.
+
+Makefile kompiluje kompilator razem z interpreterem w wersji obsługującej duże
+liczby całkowite, dlatego do działania potrzebuje zainstalowanej bilioteki CLN
+(libcln-dev). 
+
+--------------------------------------------------------------------------------
+
+Budowanie kompilatora (i interpretera):
+
+ $ make all
+ 
+"Sprzątanie":
+ 
+ $ make clean
+ 
+ Skompilowany program dostępny będzie w katalogu /bin.
+
+--------------------------------------------------------------------------------
+
+Aby uruchomić kompilator należy wywołać polecenie:
+
+ $ ./compiler
+
+Program wczytuje strumień z podanego mu wejścia, można:
+ - wpisywać kod programu ręcznie po uruchiomieniu kompilatora,
+ - przekierować strumień z pliku np.: ./compiler < program.imp.
+ 
+Wynik działania zostanie wypisany na wyjście:
+
+ $ ./compiler < ./program.imp > ./result
+ $ ./interpreter ./result
+
+--------------------------------------------------------------------------------
+
+W razie problemów (których nie stwierdzono podczas testowania programu przed
+wysłaniem), można próbować uruchomić go bez optymalizacji (parametr -no albo
+--nooptimize):
+
+ $ ./compiler --nooptimize < ./program.imp > ./result
+ $ ./interpreter ./result
+ 
+
+

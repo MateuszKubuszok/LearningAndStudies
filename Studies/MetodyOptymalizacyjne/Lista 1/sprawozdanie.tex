@@ -1,0 +1,388 @@
+\documentclass[polish,12pt,titlepage]{article}
+
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\selectlanguage{polish}
+
+\usepackage{listings}
+\usepackage{url}
+\usepackage{path}
+\usepackage{here}
+
+\usepackage{color}
+\definecolor{lightgray}{gray}{0.6}
+
+%\setlength{\textwidth}{400pt}
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\TAB}{\hspace{0.50cm}}
+\newcommand{\IFF}{\leftrightarrow}
+\newcommand{\IMP}{\rightarrow}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{definition}{Definition}[section]
+
+\makeindex
+
+\begin{document}
+
+\title{Metody Optymalizacyjne - sprawozdanie z listy 1}
+\author{Mateusz Kubuszok (179956)}
+\maketitle
+
+\section{Zadanie 1}
+
+Treścią zadania jest wykonanie testu na odporność solvera na błędy numeryczne. W tym celu wykorzystuje się macierz Hilbera znaną ze słabego uwarunkowania i z tego powodu często używaną w tego typu testach.
+
+Parametrami w zadaniu będą:
+\begin{itemize}
+    \item liczba $n$ określająca stopień macierzy $A$, oraz
+    \item długość wektora $b$ w równaniu liniowym. Określa ona również wielkość wektora zmiennych $x$.
+\end{itemize} 
+
+\subsection{Zmienne decyzyjne}
+
+Jedyną zmienna jest wektor $x$. Jego kolejne wartości określają współczynniki o jaki pomnożone zostały kolejne kolumny macierzy hilbertowskiej $A$ przed ich sumowaniem, tak że uzyskano w efekcie wektor $b$.
+
+\subsection{Ograniczenia}
+
+Pierwszym z nałożonych ograniczeń jest wymóg spełnienia równania liniowego $Ax = b$:
+
+\begin{center}
+$\forall_{i = 1...n} \sum\limits_{j=1}^n A_{ij}x_{j} = b_{i}$
+\end{center}
+
+Kolejnym jest wymóg, aby wszystkie wartości wektora $x$ były dodatnie:
+
+\begin{center}
+$\forall_{i = 1...n}{x_i \geq 0}$
+\end{center}
+
+Wynikają one wprost z treści zadania.
+
+\subsection{Funkcja celu}
+
+Dla zadania określona została następująca funkcja celu:
+
+\begin{center}
+$minimalizuj: f_c(x) = \sum\limits_{i=1}^n b_i x_i$
+\end{center}
+
+Przyjmuje ona optymalną wartość dla wektora jedynek $x_i = 1$.
+
+\subsection{Wyniki}
+
+Dla $n = 10$ otrzymano następujący wektor rozwiązań:
+
+\begin{center}
+$x = [0.999938530206807, 1.00373274244084,  0.944628406742733, 1.33830530509672, \linebreak
+     0 2.39779419248719, 0.521733065497489, 0 2.1745683660549, 0.619265228609009]$
+\end{center}
+     
+zaś wartość funkcji celu była następująca:
+
+\begin{center}
+$f_c(x) = 13.3754280633893$
+\end{center}
+
+\subsection{Interpretacja wyników}
+
+Prawidłowym rozwiązaniem jest wektor jedynek. Błąd względny (obliczany przy pomocy normy wektora) szacujemy na $0.763195132833894$.
+
+Rozbieżność wynika ze wspomnianego już złego uwarunkowania macierzy Hilbera - ponieważ wynik jest obliczany numerycznie ma to duży wpływ na otrzymane wartości.
+
+\section{Zadanie 2}
+
+Treścią zadania jest znalezienie optymalnych ilości paliwa dostarczanego od $j$ możliwych dostawców do $i$ możliwych lotnisk.
+
+Parametrami są:
+\begin{itemize}
+    \item deklaracje dostępnych lotnisk oraz dostawców,
+    \item koszty dostaw (w dolarach za galon),
+    \item zapotrzebowanie poszczególnych lotnisk, oraz
+    \item zapasy magazynowe dostawców (w galonach paliwa).
+\end{itemize}
+
+\subsection{Zmienne decyzyjne}
+
+Zmiennymi są wartości macierzy $A = [a_{ij}]$,  zawierającej ilość paliwa w galonach dostarczanego do $i$-tego lotniska z $j$-tej firmy.
+
+\subsection{Ograniczenia}
+
+Wymagamy aby każde lotnisko $i$ dostało wystarczającą ilość paliwa:
+
+\begin{center}
+$\forall_{i} zapotrzebowanie_i \leq \sum_{j} A_{ij}$
+\end{center}
+
+jak również, aby każdy dostawca był w stanie wykonać zamówienie:
+
+\begin{center}
+$\forall_{j} zapasy_{j} \geq \sum_{i} A_{ij}$
+\end{center}
+
+Wymagamy również, aby ilość dostarczanego paliwa dla każdego lotniska od każdego dostawcy była nieujemna:
+
+\begin{center}
+$\forall_{i} \forall_{j} A_{ij} \geq 0$
+\end{center}
+
+\subsection{Funkcja celu}
+
+Funkcja celu dana:
+
+\begin{center}
+$minimalizuj: f_c(A) = \sum_{i} \sum_{j} A_{ij} * koszt_{ij}$
+\end{center}
+
+ma zadanie zminimalizować całkowity koszt zaopatrywania lotnisk.
+
+\subsection{Wyniki}
+
+Dla zdefiniowanych w treści zadania parametrów otrzymano następujące wyniki:
+\begin{itemize}
+    \item lotnisko 1. kupiło cały potrzebny zapas ($110 000$ galonów paliwa) od 2. dostawcy,
+    \item lotnisko 2. kupiło $165 000$ galonów od 1., a $55000$ od 2. dostawcy,
+    \item lotnisko 3. kupiło cały potrzebny zapas ($330 000$ galonów paliwa) od 3. dostawcy,
+    \item lotnisko 4. kupiło $110 000$ galonów od 1., a $330 000$ od 3. dostawcy,
+    \item całkowity koszt wyniósł $8525000$ dolarów.
+\end{itemize}
+
+\subsection{Interpretacja wyników}
+
+Dla każdego lotniska najbardziej opłacalne byłoby wybranie najkorzystniejszego dostawcy i zakupienie u niego całego potrzebnego paliwa. Jest to widoczne na przykładzie 1. oraz 3. lotniska.
+
+Jednakże dostawcy nie dysponują nieograniczonymi zapasami. W takim wypadku konieczne jest takie rozłożenie zakupów między kilku dostawców, aby koszt był najmniejszy. Zarówno lotnisko 2. jak i 4. zrealizowały zapotrzebowanie przy pomocy dwóch różnych dostawców.
+
+\section{Zadanie 3}
+
+Treścią zadania jest obliczenie ilości odpowiednich rodzajów ropy jakie na należy kupić, aby w procesach destylacji oraz krakowania katalitycznego otrzymać wymagane ilości paliw ciężkich, domowych oraz silnikowych.
+
+Od paliwa domowego wymaga się dodatkowo nieprzekraczania określonej ilości stężenia siarki.
+
+Parametrami są:
+\begin{itemize}
+    \item ilości produktów jakie musimy otrzymać,
+    \item ceny obu gatunków ropy,
+    \item koszty destylacji oraz krakowania, oraz
+    \item zawartość siarki w półproduktach powstałych w tych procesach,
+    \item wydajność destylacji obu rodzajów ropy i krakowania,
+    \item zawartość siarki produktach destylacji oraz krakowania oraz maksymalne stężenie siarki w paliwie domowym.
+\end{itemize}
+
+\subsection{Zmienne decyzyjne}
+
+Zmiennymi w zadaniu są:
+\begin{itemize}
+    \item ilości ropy typu pierwszego oraz drugiego jakie należy zakupić, oraz 
+    \item zmienne określające rozdział półproduktów w węzłach produkcji:
+    \begin{itemize}
+        \item rozdział destylatów między krakowaniem katalitycznym, a mieszaniem z innymi półproduktami w celu otrzymania paliw ciężkich,
+        \item rozdział oleju w celu mieszania paliw domowych oraz paliw ciężkich,
+        \item pomocnicze zmienne określające jaką część krakowanych półproduktów pochodziła z destylacji określonego rodzaju ropy,
+    \end{itemize}
+    \item ilość półproduktów powstałych w poszczególnych procesach,
+    \item całkowita ilość siarki w oleju domowym oraz całkowita ilość oleju domowego.
+\end{itemize}
+
+\subsection{Ograniczenia}
+
+Nałożone są następujące ograniczenia:
+\begin{itemize}
+    \item ilość produktów destylacji musi się wynikać z parametrów określających jej wydajność:
+    \begin{center}
+    $\forall_{ropa \in RodzajeRopy} \forall_{polprodukt \in Polprodukty} \; destylacja_{polprodukt,ropa} = ilosc_{ropa} * wydajnosc_{destylacja,polprodukt,ropa} $
+    \end{center}
+    
+    \item suma destylatów przeznaczonych do krakowania oraz na mieszanie paliw ciężkich musi być równa ilości destylatów otrzymanych z ropy:
+    \begin{center}
+    $\forall_{ropa \in RodzajeRopy} \; destylacja_{destylat,ropa} = destylatDoKrakowania_{ropa} + destylatDoPaliwCiezkich_{ropa}$
+    \end{center}
+
+    \item suma olejów przeznaczonych do mieszania paliw domowych oraz paliw ciężkich musi być równa ilość olejów otrzymanych z ropy:
+    \begin{center}
+    $\forall_{ropa \in RodzajeRopy} \; destylacja_{olej,ropa} = olejDoPaliwDomowych_{ropa} + olejDoPaliwCiezkich_{ropa}$
+    \end{center}
+
+    \item ilość produktów krakowania musi wynikać z wydajności procesu:
+    \begin{center}
+    $\forall_{ropa \in RodzajeRopy} \forall_{polprodukt \in Polprodukty \setminus \{destylat\}} \; krakowanie_{polprodukt,ropa} = destylatDoKrakowania_{ropa} * wydajnosc_{krakowanie,polprodukt,ropa}$
+    \end{center}
+
+    \item całkowita ilość produktów krakowania musi być sumą produktów krakowania obu rodzajów ropy:
+    \begin{center}
+    $\forall_{produkt \in Produkty} \forall_{polprodukt \in Polprodukty} \; (polprodukt = skladnik_{produkt}) \implies (paliwoZKrakowania_{produkt} = \sum_{ropa \in RodzajeRopy} krakowanie_{ropa,polprodukt})$
+    \end{center}
+
+    \item musi zostać wyprodukowana wymagana ilość paliwa silnikowego:
+    \begin{center}
+    $minimumPaliwa_{silnikowy} \leq paliwoZKrakowania_{silnikowe} + \sum_{ropa \in RodzajeRopy} destylacja_{benzyna,ropa}$
+    \end{center}
+
+    \item musi zostać wyprodukowana wymagana ilość paliwa domowego:
+    \begin{center}
+    $minimumPaliwa_{domowe} \leq paliwoZKrakowania_{domowe} + \sum_{ropa \in RodzajeRopy} ( destylacja_{resztki,ropa} + destylatDoPaliwCiezkich_{ropa} + olejDoCiezkiegoOleju_{ropa} )$
+    \end{center}
+
+    \item musi zostać wyprodukowana wymagana ilość paliwa ciężkiego:
+    \begin{center}
+    $minimumPaliwa_{ciezkie} \leq paliwoZKrakowania_{ciezkie} + \sum_{ropa \in RodzajeRopy} ( destylacja_{resztki,ropa} + destylatDoPaliwCiezkich_{ropa} + olejDoPaliwCiezkich_{ropa} )$
+    \end{center}
+
+    \item całkowita ilość siarki w oleju domowym jest równa sumie siarki zawartej w przeznaczonych do jego produkcji olejach pochodzących z destylacji i krakowania:
+    \begin{center}
+    $siarkaWPaliwieDomowym = \sum_{ropa \in RodzajeRopy} ( olejDoPaliwDomowych_{ropa} + stezenieSiarki_{destylacja,ropa} + krakowanie_{olej,ropa} * stezenieSiarki_{krakowanie,ropa} )$
+    \end{center}
+    
+    \item całkowita ilość oleju domowego musi być równa sumie oleju przeznaczonego do paliwa domowego oraz oleju z krakowania:
+    \begin{center}
+    $iloscPaliwaDomowego = paliwoZKrakowania_{domowe} + \sum_{ropa \in RodzjeRopy} \; olejDoPaliwaDomowego_{ropa}$
+    \end{center}
+    
+    \item stężenie siarki w paliwie domowym nie może być większe niż dopuszczalne:
+    \begin{center}
+    $maksymalneStezenieSiarki * iloscPaliwaDomowego \geq siarkaWPaliwieDomowym$
+    \end{center}
+    
+    \item wszystkie zmienne są nieujemne.
+\end{itemize}
+
+\subsection{Funkcja celu}
+
+Funkcją celu jest koszt produkcji:
+\begin{center}
+$minimalizuj: f_{c} = \sum_{ropa \in RodzajeRopy}({koszt_{ropy}}_{ropa} * ilosc_{ropa} +  koszt_{destylacja} * ilosc_{ropa} + koszt_{kraking} * {ilosc_{destylat}}_{ropa})$
+\end{center}
+obliczająca sumę kosztów zakupu ropy, destylacji oraz kosztu krakingu destylatów.
+
+\subsection{Wyniki}
+
+Całość zakupionej ropy ($1026030.36876356$ ton) jest typu pierwszego. Całkowity koszt produkcji wyniósł $1345943600.86768$ dolarów.
+
+\subsection{Interpretacja wyników}
+
+Ropa typu drugiego jest nieopłacalna do zakupu. Wynika to być może z wyższych kosztów zakupu oraz faktu, że efektywność jej destylacji jest mniejsza dla półproduktów częściej wykorzystywanych.
+
+\section{Zadanie 4}
+
+Treścią zadania jest ustalenie najbardziej atrakcyjnego planu zajęć dla studenta. Atrakcyjność mierzona jest na podstawie ocen poszczególnych grup zajęciowych do których może zapisać się student.
+
+Student musi być zapisany do jednej z 4 grup ćwiczeniowych dla każdego z 5 obowiązkowych przedmiotów. Dodatkowo chce znaleźć czas na minimum 1 zajęcia sportowe w tygodniu, zaś zajęć akademickich nie powinny trwać więcej niż 4 godziny dziennie. Zajęcia nie mogą kolidować ze sobą, codziennie powinna istnieć też co najmniej godzinna przerwa na obiad między godziną 12. a 14.
+
+Parametrami zadania są:
+\begin{itemize}
+    \item listy dostępnych przedmiotów, grup zajęciowych i grup sportowych,
+    \item lista dni w których odbywają się zajęcia, lista godzin w podczas których mogą trwać zajęcia (rozłącznych odcinków czasu; nie muszą koniecznie trwać 1 godzinę zegarową),
+    \item plan godzinowy kursów (czy dana grupa odbywa zajęcia podczas danej godziny, grupy mogą alokować więcej niż jedną godzinę jednocześnie),
+    \item oceny grup z danego przedmiotu,
+    \item maksymalna liczba godzin zajęciowych dziennie,
+    \item plan godzinowy grup sportowych (analogicznie jak w kursach akademickich),
+    \item minimalna liczba zajęć sportowych tygodniowo,
+    \item godziny, które mogą być wolne danego dnia, aby otrzymać wymaganą przerwę, maksymalny czas na przerwę danego dnia i wymagana ilość wolnego czasu.
+\end{itemize}
+
+Alokacje planu zajęć oraz grup sportowych określa się zmiennymi binarnymi {$1$ jeśli zaalokowano, $0$ w.p.p}.
+
+Należy również rozpatrzyć wersję planu z dodatkowymi ograniczeniami:
+\begin{itemize}
+    \item wszystkie zajęcia odbywają się w poniedziałek, wtorek i czwartek,
+    \item wszystkie grupy mają ranking nie mniejszy niż $5$.
+\end{itemize}
+
+\subsection{Zmienne decyzyjne}
+
+Zmiennymi decyzyjnymi są:
+\begin{itemize}
+    \item zmienne określające, czy zapisano się do danej grupy z danego kursu ($1$ jeśli zapisano się do grupy, $0$ w.p.p.),
+    \item zmienne określające, czy zapisano się na dane zajęcia sportowe (j.w.).
+\end{itemize}
+
+\subsection{Ograniczenia}
+
+Nałożone są następujące ograniczenia:
+\begin{itemize}
+    \item z danego przedmiotu można się zapisać tylko do jednej grupy zajęciowej:
+    \begin{center}
+    $\forall_{przedmiot \in Przedmioty} \; \sum_{grupa \in Grupy} \; zapisany_{przedmiot,grupa} = 1$
+    \end{center}
+    
+    \item godziny zajęć nie kolidują ze sobą:
+    \begin{center}
+    $\forall_{godzina \in Godziny} \; \sum_{przedmiot \in Przedmioty} \sum_{grupa \in Grupy} (planZajec_{przedmiot,grupa,godzina} * zapisany_{przedmiot,grupa}) + \sum_{grupaSportowa \in GrupySportowe} (planTreningow_{godzina} * zapisanyTreningi_{grupaSportowa}) \leq 1$
+    \end{center}
+    
+    \item zajęcia nie zajmują więcej czasu, niż narzucony limit:
+    \begin{center}
+    $\forall_{dzien \in DniNauki} \; \sum_{godzina \in Godziny_{dzien}} \sum_{przedmiot \in Przedmioty} \sum_{grupa \in Grupy} \linebreak
+    zapisany_{przedmiot,grupa} * czasTrwania_{godzina} \leq maksGodzinZajeciowych$
+    \end{center}
+    
+    \item zachowana jest dzienna ilość przerw w zajęciach:
+    \begin{center}
+    $\forall_{dzien \in Dni} \; maksWolegoCzasu_{dzien} - \sum_{godziny \in PotencjalnieWolneGodziny_{dzien}} \linebreak
+    (\sum_{przedmiot \in Przedmioty} \sum_{grupa \in Grupy} \; planZajec_{przedmiot,grupa,godzina} * czasTrwania_{godzina} + \sum_{grupaSportowa \in GrupySportowe} planTreningow_{grupaSportowa} * czasTrwania_{godzina}) \geq minWolegoCzasu$
+    \end{center}
+    
+    \item zachowana jest wymagana ilość zajęć sportowych:
+    \begin{center}
+    $\sum_{grupaSportowa \in GrupySportowe} zapisanySport_{grupaSportowa} \geq minZajecSportowych$
+    \end{center}
+\end{itemize}
+
+Osobno rozpatrujemy plan z dodatkowymi ograniczeniami:
+\begin{itemize}
+    \item nie odbywamy zajęć poza dozwolonymi dniami:
+    \begin{center}
+    $\forall_{dzien \in Dni \setminus DozwoloneDni} \; \sum_{godzina \in Godziny_{dzien}} \sum_{przedmiot \in Przedmioty} \sum_{grupa \in Grupy} \linebreak
+    planZajec_{przedmiot,grupa,godzina} * zapisany_{przedmiot,grupa} = 0$
+    \end{center}
+    
+    \item wszystkie grupy zajęciowe mają ranking większy lub równy wymaganemu:
+    \begin{center}
+    $\forall_{przedmiot \in Przedmioty} \forall_{grupa \in Grupy} \; ranking_{przedmiot,grupa} \implies zapisany_{przedmiot,grupa} = 0$
+    \end{center}
+\end{itemize}
+
+\subsection{Funkcja celu}
+
+Funkcja celu określa maksymalną atrakcyjność planu zajęć:
+
+\begin{center}
+$maksymalizuj: f_{c} = \sum_{przedmiot \in Przedmioty} \sum_{grupa \in Grupy} \; zapisany_{przedmiot,grupa} * ranking_{plzedmiot,grupa}$
+\end{center}
+
+\subsection{Wyniki}
+
+Dla podstawowej wersji zagadnienia otrzymano następujące wyniki:
+\begin{itemize}
+    \item student jest zapisany do grup zajęciowych:
+    \begin{itemize}
+        \item algebra - grupa 3.,
+        \item analiza matematyczna - grupa 2.,
+        \item fizyka - grupa 4.,
+        \item chemia organiczna - grupa 2.,
+        \item chemia minerałów - grupa 1.,
+        \item treningi - grupa 1.,
+    \end{itemize}
+    \item wartość planu zajęć wg. ocen z rankingu to $37$.
+\end{itemize}
+
+Dla wersji z dodatkowymi obwarowaniami rozwiązania nie znaleziono.
+
+\subsection{Interpretacja wyników}
+
+Możliwa jest znalezienie optymalnego planu tak długo, jak tylko ograniczenia pozwalają na jakikolwiek wybór. Jeśli dla danych parametrów nie istnieje rozwiązanie, musimy zrezygnować z pewnych warunków, aby otrzymać plan zajęć optymalny dla pozostałych warunków.
+
+\end{document}

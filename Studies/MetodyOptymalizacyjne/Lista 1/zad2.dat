@@ -1,0 +1,30 @@
+/*
+    Mateusz Kubuszok (179956)
+*/
+
+/*  beginning of data section */
+data;
+
+set Companies := C1 C2 C3;    /*  definition of available companies  */
+set Airports  := A1 A2 A3 A4; /*  definition of handled airports  */
+
+param CompanyMax :=           /*  definition of maximal amount of supplied oil per company  */
+    C1 275000
+    C2 550000
+    C3 660000;
+
+param AirportNeeds :=         /*  definition of required amount of oil per airport */
+    A1 110000
+    A2 220000
+    A3 330000
+    A4 440000;
+
+param DeliveryCost :          /*  definition of delivery cost per airport and company */
+       C1 C2 C3 :=
+    A1 10 7  8
+    A2 10 11 14
+    A3 9  12 4
+    A4 11 13 9;
+
+/*  end of data section */
+end;

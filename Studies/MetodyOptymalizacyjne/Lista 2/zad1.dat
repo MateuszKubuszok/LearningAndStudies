@@ -1,0 +1,17 @@
+/*
+    Mateusz Kubuszok (179956)
+*/
+
+/*  beginning of data section */
+data;
+
+param MaxWidth := 22;
+
+param : Types: TypeWidth TypeRequired :=
+        '1'    7         109
+        '2'    5         117
+        '3'    3         79
+;
+
+/*  end of data section */
+end;

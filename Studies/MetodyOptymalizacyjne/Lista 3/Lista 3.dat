@@ -1,0 +1,52 @@
+/*********************************************
+ * OPL 12.4 Data
+ * Author: Mateusz Kubuszok
+ * Creation Date: May 25, 2013 at 8:34:13 PM
+ *********************************************/
+
+p = 1;	/* number of resources' types */
+n = 8;	/* number of jobs types */ 
+
+/* maximal amount of each resource */
+Limits = [
+	30 // 1
+];
+
+/* required amoutns of resources for each job */
+Requires = [
+//	  1
+	[ 9  ],	// 1
+	[ 17 ],	// 2
+	[ 11 ],	// 3
+	[ 4  ],	// 4
+	[ 13 ],	// 5
+	[ 7  ],	// 6
+	[ 7  ],	// 7
+	[ 17 ]	// 8
+];
+
+/* duration of each job */
+Duration = [
+	50,
+	47,
+	55,
+	46,
+	32,
+	57,
+	15,
+	62,
+];
+
+/* jobs dependencies */
+Dependency = {
+	<2,1>,
+	<3,1>,
+	<4,1>,
+	<5,2>,
+	<6,3>,
+	<6,4>,
+	<7,4>,
+	<8,5>,
+	<8,6>,
+	<8,7>
+};
